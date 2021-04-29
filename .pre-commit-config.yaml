@@ -1,13 +1,13 @@
 default_language_version:
   python: python3.9
-default_stages: [commit, manual]
+default_stages: [ commit, manual ]
 repos:
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v3.4.0
-      hooks:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
       - id: check-added-large-files
         args:
-        - '--maxkb=10000'
+          - '--maxkb=10000'
       - id: end-of-file-fixer
       - id: check-json
       - id: check-toml
@@ -16,15 +16,22 @@ repos:
       - id: check-case-conflict
       - id: detect-aws-credentials
         args:
-        - '--allow-missing-credentials'
+          - '--allow-missing-credentials'
       - id: check-symlinks
       - id: check-merge-conflict
         stages:
-        - commit
-        - merge-commit
-        - manual
+          - commit
+          - merge-commit
+          - manual
       - id: requirements-txt-fixer
-    - repo: https://github.com/psf/black
-      rev: 20.8b1
-      hooks:
-          - id: black
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+  - repo: local
+    hooks:
+    -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]

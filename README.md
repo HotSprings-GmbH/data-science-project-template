@@ -2,18 +2,34 @@
 
 Basic setup for a data science project.
 
-Requirements: `anaconda` or `miniconda`.
 
-Install and configure tools:
+## Requirements
+
+`anaconda` or `miniconda`.
+
+## Setup Instructions (unix)
 
 <ol>
-<li> Replace `CHOOSE_YOUR_ENV_NAME` in environment.yaml</li>
-<li> Run the following instruction:</li>
-</ol>
+<li>Create and enter directory for your new repository</li>
+<li>Clone template repository</li>
 
 ```
-conda env create -f environment.yml
-ENV_NAME=$(grep "name: " environment.yml | cut -f2 -d: | sed 's/.$//')
-conda activate $ENV_NAME
+git clone git@ac1-git1.umlaut.com:hsg/hsg/data-science/data-science-project-template.git .
+git branch -m draft master # to be removed
+```
+
+<li>Set origin to point to new repository</li>
+
+```
+git remote set-url origin git@ac1-git1.umlaut.com:hsg/YOUR/NEW/PROJECT.git
+```
+
+<li>Configure tools</li>
+
+```
+env_name=YOUR_NEW_CONDA_ENV_NAME
+conda env create -f environment.yml --name=${env_name}
+conda activate $env_name
 pre-commit install
 ```
+</ol>
