@@ -15,7 +15,6 @@ Basic setup for a data science project.
 
 ```
 git clone git@ac1-git1.umlaut.com:hsg/hsg/data-science/data-science-project-template.git .
-git branch -m draft master # to be removed
 ```
 
 <li>Set origin to point to new repository</li>
