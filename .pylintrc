@@ -170,7 +170,6 @@ disable=print-statement,
 
 
 
-
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
@@ -222,7 +221,7 @@ argument-naming-style=snake_case
 
 # Regular expression matching correct argument names. Overrides argument-
 # naming-style.
-#argument-rgx=
+argument-rgx=([a-z_][a-z0-9_]{0,50}$)|([A-Z])
 
 # Naming style matching correct attribute names.
 attr-naming-style=snake_case
