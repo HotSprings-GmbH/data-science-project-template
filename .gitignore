@@ -78,3 +78,7 @@ venv.bak/
 
 # IDEA IDEs
 .idea
+
+# Data
+data/*
+!data/raw/
