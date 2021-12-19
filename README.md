@@ -17,10 +17,19 @@ Basic setup for a data science project.
 git clone git@ac1-git1.umlaut.com:hsg/hsg/data-science/data-science-project-template.git .
 ```
 
-<li>Set origin to point to new repository</li>
+<li>Remove the Git history of the template</li>
 
 ```
-git remote set-url origin git@ac1-git1.umlaut.com:hsg/YOUR/NEW/PROJECT.git
+rm -rf .git
+```
+
+<li>Initialize a new repository and push it</li>
+
+```
+git init
+git add .
+git commit -m 'Initialize from data science template'
+git remote add origin git@ac1-git1.umlaut.com:hsg/YOUR/NEW/PROJECT.git
 ```
 
 <li>Configure tools</li>
