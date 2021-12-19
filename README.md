@@ -2,7 +2,6 @@
 
 Basic setup for a data science project.
 
-
 ## Requirements
 
 `anaconda` or `miniconda`.
@@ -41,4 +40,5 @@ conda activate $env_name
 pre-commit install
 pre-commit install --hook-type commit-msg
 ```
+
 </ol>
