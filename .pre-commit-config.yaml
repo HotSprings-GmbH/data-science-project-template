@@ -23,6 +23,13 @@ repos:
           - merge-commit
           - manual
       - id: requirements-txt-fixer
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v7.0.1
+    hooks:
+      - id: commitlint
+        additional_dependencies: ['@commitlint/config-conventional']
+        stages:
+          - commit-msg
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:

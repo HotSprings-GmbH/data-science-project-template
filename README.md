@@ -39,5 +39,6 @@ env_name=YOUR_NEW_CONDA_ENV_NAME
 conda env create -f environment.yml --name=${env_name}
 conda activate $env_name
 pre-commit install
+pre-commit install --hook-type commit-msg
 ```
 </ol>
