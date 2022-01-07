@@ -1,1 +1,5 @@
 data/** filter=lfs diff=lfs merge=lfs -text
+
+# let git decide if a file is a text file or a binary files
+# for text files, convert all CRLF to LF on check-in (not in working tree)
+* text=auto
