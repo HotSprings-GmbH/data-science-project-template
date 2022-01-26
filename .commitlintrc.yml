@@ -1,27 +1,27 @@
 extends:
-    - '@commitlint/config-conventional'
+  - "@commitlint/config-conventional"
 rules:
-    # Scope enum should be customized to match project needs
-    scope-enum:
-        - 2
-        - always
-        - - scope-1
-          - scope-2
-    # Type enum should be consistent across data science projects
-    type-enum:
-        - 2
-        - always
-        - - build
-          - chore
-          - ci
-          - docs
-          - feat
-          - fix
-          - perf
-          - refactor
-          - revert
-          - style
-          - test
-          - data
-          - explore
-          - result
+  # Scope enum should be customized to match project needs
+  scope-enum:
+    - 2
+    - always
+    - - scope-1
+      - scope-2
+  # Type enum should be consistent across data science projects
+  type-enum:
+    - 2
+    - always
+    - - build
+      - chore
+      - ci
+      - docs
+      - feat
+      - fix
+      - perf
+      - refactor
+      - revert
+      - style
+      - test
+      - data
+      - explore
+      - result
