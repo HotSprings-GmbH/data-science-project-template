@@ -12,4 +12,4 @@ tag_version:
     - npm i --save-dev conventional-changelog-conventionalcommits
     - npx semantic-release
   only:
-    - master
+    - main

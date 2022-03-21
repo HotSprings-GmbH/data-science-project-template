@@ -52,5 +52,5 @@
     ],
     "@semantic-release/gitlab"
   ],
-  "branches": "master"
+  "branches": "main"
 }
