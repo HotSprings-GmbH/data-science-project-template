@@ -63,3 +63,4 @@ repos:
         stages:
           - commit
           - manual
+        exclude: data/
