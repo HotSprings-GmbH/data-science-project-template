@@ -1,15 +1,6 @@
-image: node:17-slim
-
-stages:
-  - release
-
-tag_version:
-  stage: release
-  before_script:
-    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates git-lfs
-  script:
-    - npm install @semantic-release/gitlab
-    - npm i --save-dev conventional-changelog-conventionalcommits
-    - npx semantic-release
-  only:
-    - main
+# the ci configuration is split into multiple files
+# this allows the semantic versioning (versioning the template itself) to be easily removed
+include:
+  - .gitlab-ci-stages.yml
+  - .gitlab-ci-release.yml
+  - .gitlab-ci-test.yml
