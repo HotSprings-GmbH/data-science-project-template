@@ -1,66 +1,66 @@
 default_install_hook_types: [pre-commit, commit-msg]
 default_stages: [commit, manual]
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
-    hooks:
-      - id: check-added-large-files
-        args:
-          - "--maxkb=10000"
-      - id: end-of-file-fixer
-        exclude: '\.ipynb$'
-      - id: check-json
-      - id: check-toml
-      - id: check-xml
-      - id: check-yaml
-      - id: check-case-conflict
-      - id: detect-aws-credentials
-        args:
-          - "--allow-missing-credentials"
-      - id: check-symlinks
-      - id: check-merge-conflict
-        stages:
-          - commit
-          - merge-commit
-          - manual
-      - id: requirements-txt-fixer
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v7.0.1
-    hooks:
-      - id: commitlint
-        additional_dependencies: ["@commitlint/config-conventional"]
-        stages:
-          - commit-msg
-  - repo: local
-    hooks:
-      - id: black
-        name: black
-        entry: black
-        language: system
-        types: [python]
-      - id: nbqa-black
-        name: nbqa-black
-        entry: nbqa black
-        language: system
-        files: \.ipynb
-      - id: pylint
-        name: pylint
-        entry: pylint
-        language: system
-        types: [python]
-      - id: nbqa-pylint
-        name: nbqa-pylint
-        entry: nbqa pylint
-        language: system
-        files: \.ipynb
-        args:
-          - --disable=pointless-statement,duplicate-code,expression-not-assigned
-          - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|([a-z_][a-z0-9_]{0,50}))$
-  - repo: https://github.com/prettier/pre-commit
-    rev: v2.1.2
-    hooks:
-      - id: prettier
-        stages:
-          - commit
-          - manual
-        exclude: data/
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v3.4.0
+      hooks:
+          - id: check-added-large-files
+            args:
+                - '--maxkb=10000'
+          - id: end-of-file-fixer
+            exclude: '\.ipynb$'
+          - id: check-json
+          - id: check-toml
+          - id: check-xml
+          - id: check-yaml
+          - id: check-case-conflict
+          - id: detect-aws-credentials
+            args:
+                - '--allow-missing-credentials'
+          - id: check-symlinks
+          - id: check-merge-conflict
+            stages:
+                - commit
+                - merge-commit
+                - manual
+          - id: requirements-txt-fixer
+    - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+      rev: v7.0.1
+      hooks:
+          - id: commitlint
+            additional_dependencies: ['@commitlint/config-conventional']
+            stages:
+                - commit-msg
+    - repo: local
+      hooks:
+          - id: black
+            name: black
+            entry: black
+            language: system
+            types: [python]
+          - id: nbqa-black
+            name: nbqa-black
+            entry: nbqa black
+            language: system
+            files: \.ipynb
+          - id: pylint
+            name: pylint
+            entry: pylint
+            language: system
+            types: [python]
+          - id: nbqa-pylint
+            name: nbqa-pylint
+            entry: nbqa pylint
+            language: system
+            files: \.ipynb
+            args:
+                - --disable=pointless-statement,duplicate-code,expression-not-assigned
+                - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|([a-z_][a-z0-9_]{0,50}))$
+    - repo: https://github.com/prettier/pre-commit
+      rev: v2.1.2
+      hooks:
+          - id: prettier
+            stages:
+                - commit
+                - manual
+            exclude: data/
