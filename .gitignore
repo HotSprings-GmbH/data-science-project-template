@@ -76,8 +76,9 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDEA IDEs
+# IDEs
 .idea
+.vscode
 
 # Data
 data/*
