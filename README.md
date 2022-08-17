@@ -4,7 +4,7 @@ Basic setup for a data science project.
 
 ## Requirements
 
-`anaconda` or `miniconda`.
+`Mamba`
 
 ---
 
@@ -39,9 +39,9 @@ git remote add origin git@ac1-git1.umlaut.com:hsg/YOUR/NEW/PROJECT.git
 <li>Configure tools</li>
 
 ```
-env_name=YOUR_NEW_CONDA_ENV_NAME
-conda env create -f environment.yml --name=${env_name}
-conda activate $env_name
+env_name=YOUR_NEW_MAMBA_ENV_NAME
+mamba env create --name=${env_name} -f environment.yml
+mamba activate $env_name
 pre-commit install
 ```
 
@@ -80,9 +80,9 @@ git remote add origin git@ac1-git1.umlaut.com:hsg/YOUR/NEW/PROJECT.git
 <li>Configure tools</li>
 
 ```
-set env_name=YOUR_NEW_CONDA_ENV_NAME
-conda env create -f environment.yml --name=%env_name%
-conda activate %env_name%
+set env_name=YOUR_NEW_MAMBA_ENV_NAME
+mamba env create --name=%env_name% -f environment.yml
+mamba activate %env_name%
 pre-commit install
 ```
 
