@@ -1,0 +1,5 @@
+# the ci configuration is split into multiple files
+# this allows the semantic versioning (versioning the template itself) to be easily removed
+include:
+    - .gitlab-ci-stages.yaml
+    - .gitlab-ci-test.yaml
