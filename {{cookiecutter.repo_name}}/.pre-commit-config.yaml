@@ -38,11 +38,24 @@ repos:
             entry: black
             language: system
             types: [python]
+          - id: nbqa-black
+            name: nbqa-black
+            entry: nbqa black
+            language: system
+            files: \.ipynb
           - id: pylint
             name: pylint
             entry: pylint
             language: system
             types: [python]
+          - id: nbqa-pylint
+            name: nbqa-pylint
+            entry: nbqa pylint
+            language: system
+            files: \.ipynb
+            args:
+                - --disable=pointless-statement,duplicate-code,expression-not-assigned
+                - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|([a-z_][a-z0-9_]{0,50}))$
     - repo: https://github.com/prettier/pre-commit
       rev: v2.1.2
       hooks:
