@@ -56,7 +56,7 @@ then
   for commit_hash in ${rev_list}
   do
     # read the commit message and store it in a temporary file
-    git rev-list --format=%B --max-count=1 ${commit_hash} | tail --lines=2 > .tmp_commit_msg_storage
+    git log --format=%B --max-count=1 ${commit_hash} > .tmp_commit_msg_storage
     echo "Now analyzing commit message of ${commit_hash}:"
     echo "-----------"
     cat .tmp_commit_msg_storage
