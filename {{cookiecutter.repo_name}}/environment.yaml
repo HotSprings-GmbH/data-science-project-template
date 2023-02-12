@@ -7,4 +7,4 @@ dependencies:
     - ipykernel=6.21.1
     - python=3.10.9
     - pre-commit=3.0.4
-    - pylint=2.12.2
+    - pylint=2.16.1
