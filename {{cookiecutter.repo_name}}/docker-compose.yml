@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+    ##########
+    # Shared #
+    ##########
+    minio:
+        restart: always
+        image: minio/minio@sha256:c8b96517bdf9e133ae722ae4ad25045743087c1ff5098eff3a397a97f845fbf9
+        ports:
+            - '9000:9000'
+            - '9001:9001'
+        command: server /data --console-address ':9001' --address ':9000'
+        env_file:
+            - ./resources/mlflow/.env
+            - ./resources/minio/.env
+        networks:
+            - mlflow
+        volumes:
+            - ./volumes/minio:/data
+
+    mc:
+        build:
+            dockerfile: ./resources/mc/Dockerfile
+            context: .
+        depends_on:
+            - minio
+        container_name: mc
+        env_file:
+            - ./resources/mlflow/.env
+            - ./resources/minio/.env
+        volumes:
+            - ./scripts/wait-for-it.sh:/tmp/wait-for-it.sh
+        networks:
+            - mlflow
+
+    ##########
+    # MLFlow #
+    ##########
+    mlflow:
+        build:
+            dockerfile: resources/mlflow/Dockerfile
+            context: .
+        env_file:
+            - ./resources/mlflow/.env
+            - ./resources/minio/.env
+        depends_on:
+            - minio
+            - mlflow-db
+        ports:
+            - 5000:5000
+        networks:
+            - mlflow
+
+    mlflow-db:
+        image: mysql/mysql-server@sha256:5b40d96b11333570143d98d3a74100fefadb9abb17b27a95dbc9ad33544ec142
+        restart: always
+        env_file:
+            - ./resources/mlflow/.env
+            - ./resources/minio/.env
+        ports:
+            - '3306:3306'
+        networks:
+            - mlflow
+        volumes:
+            - ./volumes/mlflow-db:/var/lib/mysql
+
+
+networks:
+    mlflow:
