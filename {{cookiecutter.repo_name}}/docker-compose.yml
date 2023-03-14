@@ -66,5 +66,36 @@ services:
             - ./volumes/mlflow-db:/var/lib/mysql
 
 
+    ###########
+    # Prefect #
+    ###########
+    prefect-db:
+        image: postgres:15.2-alpine
+        restart: always
+        env_file:
+            - ./resources/prefect/.env
+        expose:
+            - 5432
+        volumes:
+            - ./volumes/prefect-db:/var/lib/postgresql/data
+        networks:
+            - prefect
+
+    prefect-server:
+        image: prefecthq/prefect:2.8.0-python3.11
+        restart: always
+        volumes:
+            - ./volumes/prefect:/root/.prefect
+        entrypoint: ['prefect', 'orion', 'start']
+        env_file:
+            - ./resources/prefect/.env
+        ports:
+            - 4200:4200
+        depends_on:
+            - prefect-db
+        networks:
+            - prefect
+
 networks:
     mlflow:
+    prefect:
