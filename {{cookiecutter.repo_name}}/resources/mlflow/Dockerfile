@@ -1,6 +1,18 @@
 FROM python:3.9.15
 
-RUN pip install mlflow boto3 pymysql cryptography
+ENV HOME="/root"
+WORKDIR ${HOME}
+RUN apt-get install -y git
+RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
+ENV PYENV_ROOT="${HOME}/.pyenv"
+ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}"
+
+ENV PYTHON_VERSION=3.9.15
+RUN pyenv install ${PYTHON_VERSION}
+RUN pyenv global ${PYTHON_VERSION}
+
+COPY ./resources/mlflow/requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
 
 COPY ./scripts/wait-for-it.sh /tmp/wait-for-it.sh
 

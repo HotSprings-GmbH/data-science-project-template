@@ -65,6 +65,23 @@ services:
         volumes:
             - ./volumes/mlflow-db:/var/lib/mysql
 
+    mlflow-serve:
+        build:
+            dockerfile: resources/mlflow/Dockerfile
+            context: .
+        env_file:
+            - ./resources/mlflow/.env
+            - ./resources/minio/.env
+        depends_on:
+            - mlflow-db
+            - minio
+        ports:
+            - 2000:2000
+        networks:
+            - mlflow
+        profiles:
+            - serve
+        command: mlflow models serve --model-uri ${SERVE_MODEL_URI} --host 0.0.0.0 --port 2000
 
     ###########
     # Prefect #
