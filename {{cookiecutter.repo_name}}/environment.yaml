@@ -4,7 +4,9 @@ channels:
 dependencies:
     - black=22.3.0
     - nbqa=1.2.3
-    - ipykernel=6.9.1
+    {%- if cookiecutter.install_jupyter == 'yes' %}
+    - jupyter=1.0.0
+    {%- endif %}
     - python=3.9.7
     - pre-commit=2.18.1
     - pylint=2.12.2
