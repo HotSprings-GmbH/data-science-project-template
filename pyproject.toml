@@ -17,5 +17,9 @@ exclude = '''
 )
 '''
 
+[tool.isort]
+profile='black'
+line_length = 100
+
 [tool.pytest.ini_options]
 pythonpath = ["."]

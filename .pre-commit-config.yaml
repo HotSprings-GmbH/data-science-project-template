@@ -29,6 +29,14 @@ repos:
             additional_dependencies: ['@commitlint/config-conventional']
             stages:
                 - commit-msg
+    - repo: https://github.com/pycqa/isort
+      rev: 5.12.0
+      hooks:
+          - id: isort
+            name: isort (python)
+            stages:
+                - commit
+                - manual
     - repo: local
       hooks:
           - id: black
