@@ -10,4 +10,3 @@ dependencies:
     - python=3.10.9
     - pre-commit=3.0.4
     - pylint=2.16.1
-    
