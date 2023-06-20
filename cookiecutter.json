@@ -3,5 +3,6 @@
     "project_description": "A short description of the project.",
     "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "repo_url": "URL to repository",
-    "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}"
+    "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}",
+    "install_jupyter": ["yes", "no"]
 }

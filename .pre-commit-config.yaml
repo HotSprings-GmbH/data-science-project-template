@@ -49,4 +49,4 @@ repos:
             stages:
                 - commit
                 - manual
-            exclude: data/
+            exclude: \{\{cookiecutter.repo_name\}\}/
