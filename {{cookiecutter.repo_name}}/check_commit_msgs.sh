@@ -44,6 +44,13 @@ echo "Getting new commits from ${commit_branch} w.r.t. ${main_branch}"
 merge_base=$(git merge-base ${commit_branch} ${main_branch})
 rev_list=$(git rev-list --ancestry-path ${merge_base}..${commit_branch})
 
+# check if .git.COMMIT_EDITMSG exists, create dummy file otherwise
+# pre-commit commitlint will fail if file does not exist
+# this happens on a fresh clone of the repo
+if [ ! -f ./.git/COMMIT_EDITMSG ]; then
+  touch ./.git/COMMIT_EDITMSG
+fi
+
 # check commit messages
 if [ -n "${rev_list}" ]
 then
@@ -69,4 +76,4 @@ else
   # no commits to check
   echo "Did not find any commits to check..."
 fi
-echo "Sucessfully finished checking commit messages."
+echo "Successfully finished checking commit messages."
