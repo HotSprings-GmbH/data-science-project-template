@@ -25,7 +25,7 @@ repos:
                 - manual
           - id: requirements-txt-fixer
     - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-      rev: v7.0.1
+      rev: v9.5.0
       hooks:
           - id: commitlint
             additional_dependencies: ['@commitlint/config-conventional']

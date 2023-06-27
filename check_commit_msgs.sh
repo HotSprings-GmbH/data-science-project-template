@@ -61,12 +61,19 @@ then
     echo "-----------"
     cat .tmp_commit_msg_storage
     echo "-----------"
-    # run pre-commit hook for commit message
-    pre-commit run --hook-stage commit-msg --commit-msg-filename ".tmp_commit_msg_storage"
+
+    # run commitlint on the commit message
+    if [ ! -f ".git/COMMIT_EDITMSG" ]; then
+      cp .tmp_commit_msg_storage .git/COMMIT_EDITMSG
+      pre-commit run --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
+      rm .git/COMMIT_EDITMSG
+    else
+      pre-commit run --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
+    fi;
   done
   rm .tmp_commit_msg_storage
 else
   # no commits to check
   echo "Did not find any commits to check..."
 fi
-echo "Sucessfully finished checking commit messages."
+echo "Successfully finished checking commit messages."
