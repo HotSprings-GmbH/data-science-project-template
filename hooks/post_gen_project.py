@@ -2,6 +2,7 @@
 import os
 import pathlib
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 
 
@@ -74,6 +75,25 @@ if __name__ == "__main__":
     subprocess.run(["git", "init"], check=True)
     subprocess.run(["git", "branch", "-m", "main"], check=True)
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
+
+    # Include or exclude CI setup based on user choice
+    CI_FILES = ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml']
+    if '{{cookiecutter.include_ci_files}}'.lower() == 'yes':
+        # Select platform for the project
+        ci_platform = input('Which CI platform do you want to use? [GitLab, GitHub] ').strip().lower()
+        # GitHub
+        if ci_platform == 'github':
+            for file_name in CI_FILES:
+                file_path = os.path.join(os.getcwd(), file_name)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            print("Sorry, GitHub CI is not supported yet. It will become available in a future version.", file=sys.stderr)
+            print("Proceeding without CI in your GitHub project.")
+    elif '{{cookiecutter.include_ci_files}}'.lower() == 'no':
+        for file_name in CI_FILES:
+            file_path = os.path.join(os.getcwd(), file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
     # setup environment
     PACKAGE_MANAGER = get_package_manager()
