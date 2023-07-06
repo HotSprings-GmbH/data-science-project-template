@@ -75,6 +75,22 @@ if __name__ == "__main__":
     subprocess.run(["git", "branch", "-m", "main"], check=True)
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
 
+    # Include or exclude CI setup based on user choice
+    CI_FILES = {
+        "none"   : [],
+        "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
+        "github" : []
+    }
+    CI_option = '{{cookiecutter.CI_configuration}}'.lower()
+    if CI_option == "github":
+        print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
+    del CI_FILES[CI_option]
+    files_to_exclude = {x for v in CI_FILES.values() for x in v}
+    for file_name in files_to_exclude:
+        file_path = os.path.join(os.getcwd(), file_name)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
     # setup environment
     PACKAGE_MANAGER = get_package_manager()
     PACKAGE_MANAGER.create_env_from_yaml_file(yaml_file_path=pathlib.Path("environment.yaml"))
