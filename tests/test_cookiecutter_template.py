@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 # standard library imports
+import json
 import pathlib
 import uuid
 
@@ -8,7 +9,7 @@ import pytest
 from cookiecutter.main import cookiecutter
 
 # local imports
-from hooks.post_gen_project import get_package_manager
+from hooks.post_gen_project import CI_FILES, get_package_manager
 
 
 TEMPLATE_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
@@ -22,7 +23,7 @@ def default_template(tmp_path):
         template=TEMPLATE_DIRECTORY,
         output_dir=str(tmp_path),
         no_input=True,
-        extra_context={"env_name": env_name_id},
+        extra_context={"env_name": env_name_id}
     )
     yield tmp_path.joinpath("data-science-project")
     PACKAGE_MANAGER.remove_env(env_name=env_name_id)
@@ -37,9 +38,6 @@ def test_default_template(default_template):
         ".commitlintrc.yaml",
         ".gitattributes",
         ".gitignore",
-        ".gitlab-ci-stages.yaml",
-        ".gitlab-ci-test.yaml",
-        ".gitlab-ci.yml",
         ".pre-commit-config.yaml",
         ".prettierrc",
         ".pylintrc",
@@ -48,6 +46,9 @@ def test_default_template(default_template):
         "pyproject.toml",
         "README.md",
     ]
-    for expected_file in expected_files:
+    cookiecutter_json = default_template.joinpath("cookiecutter.json")
+    ci_configuration = json.loads(cookiecutter_json.read_text())["ci_configuration"]
+    for expected_file in expected_files + CI_FILES[ci_configuration]:
         expected_file_path = default_template.joinpath(expected_file)
         assert expected_file_path.is_file(), f"Did not find file: {expected_file_path}"
+

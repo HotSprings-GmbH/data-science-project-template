@@ -5,6 +5,14 @@ import subprocess
 from abc import ABC, abstractmethod
 
 
+CI_FILES = {
+        "none"   : [],
+        "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
+        "github" : []
+    }
+
+
+
 # as cookiecutter is currently (v2.1.1) unable to support local imports in hooks
 # the environment management code has to be included here
 class CondaLikePackageManager(ABC):
@@ -76,12 +84,8 @@ if __name__ == "__main__":
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
 
     # Include or exclude CI setup based on user choice
-    CI_FILES = {
-        "none"   : [],
-        "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
-        "github" : []
-    }
-    CI_option = '{{cookiecutter.CI_configuration}}'.lower()
+    CI_option =  "{{cookiecutter.ci_configuration}}".lower()
+    
     if CI_option == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
     del CI_FILES[CI_option]

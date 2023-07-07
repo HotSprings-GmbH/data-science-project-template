@@ -5,5 +5,5 @@
     "repo_url": "URL to repository",
     "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}",
     "install_jupyter": ["yes", "no"],
-    "CI_configuration": ["None", "GitLab", "GitHub"]
+    "ci_configuration": ["None", "GitLab", "GitHub"]
 }
