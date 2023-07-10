@@ -9,7 +9,7 @@ import pytest
 from cookiecutter.main import cookiecutter
 
 # local imports
-from hooks.post_gen_project import CI_FILES, CI_OPTION, get_package_manager
+from hooks.post_gen_project import CI_FILES, get_package_manager
 
 
 TEMPLATE_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
