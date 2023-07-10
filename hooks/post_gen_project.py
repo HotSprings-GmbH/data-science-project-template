@@ -10,8 +10,7 @@ CI_FILES = {
         "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
         "github" : []
     }
-CI_OPTION = CI_OPTION =  "{{cookiecutter.ci_configuration}}".lower() 
-
+CI_OPTION = f"{{cookiecutter.ci_configuration}}".lower()
 
 
 # as cookiecutter is currently (v2.1.1) unable to support local imports in hooks

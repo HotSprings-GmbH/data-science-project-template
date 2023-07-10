@@ -46,6 +46,7 @@ def test_default_template(default_template):
         "pyproject.toml",
         "README.md",
     ]
+    print(type(CI_OPTION))
     for expected_file in expected_files + CI_FILES[CI_OPTION]:
         expected_file_path = default_template.joinpath(expected_file)
         assert expected_file_path.is_file(), f"Did not find file: {expected_file_path}"
