@@ -86,8 +86,7 @@ if __name__ == "__main__":
     ci_iption =  "{{cookiecutter.ci_configuration}}".lower()
     if ci_iption == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
-    del CI_FILES[ci_iption]
-    files_to_exclude = {x for v in CI_FILES.values() for x in v}
+    files_to_exclude = [item for key, value in CI_FILES.items() if key != ci_iption for item in value]
     for file_name in files_to_exclude:
         file_path = os.path.join(os.getcwd(), file_name)
         if os.path.exists(file_path):
