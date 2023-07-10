@@ -1,4 +1,5 @@
 # standard library imports
+import cookiecutter
 import os
 import pathlib
 import subprocess
@@ -10,7 +11,6 @@ CI_FILES = {
         "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
         "github" : []
     }
-CI_OPTION = f"{{cookiecutter.ci_configuration}}".lower()
 
 
 # as cookiecutter is currently (v2.1.1) unable to support local imports in hooks
@@ -85,7 +85,6 @@ if __name__ == "__main__":
 
     # Include or exclude CI setup based on user choice
     CI_OPTION =  "{{cookiecutter.ci_configuration}}".lower()
-    print(type(CI_OPTION))
     if CI_OPTION == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
     del CI_FILES[CI_OPTION]
