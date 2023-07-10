@@ -9,7 +9,7 @@ import pytest
 from cookiecutter.main import cookiecutter
 
 # local imports
-from hooks.post_gen_project import CI_FILES, get_package_manager
+from hooks.post_gen_project import CI_FILES, CI_OPTION, get_package_manager
 
 
 TEMPLATE_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
@@ -46,9 +46,7 @@ def test_default_template(default_template):
         "pyproject.toml",
         "README.md",
     ]
-    cookiecutter_json = default_template.joinpath("cookiecutter.json")
-    ci_configuration = json.loads(cookiecutter_json.read_text())["ci_configuration"]
-    for expected_file in expected_files + CI_FILES[ci_configuration]:
+    for expected_file in expected_files + CI_FILES[CI_OPTION]:
         expected_file_path = default_template.joinpath(expected_file)
         assert expected_file_path.is_file(), f"Did not find file: {expected_file_path}"
 

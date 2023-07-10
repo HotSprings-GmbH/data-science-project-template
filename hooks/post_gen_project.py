@@ -10,6 +10,7 @@ CI_FILES = {
         "gitlab" : ['.gitlab-ci.yml', '.gitlab-ci-test.yaml', '.gitlab-ci-stages.yaml'],
         "github" : []
     }
+CI_OPTION = CI_OPTION =  "{{cookiecutter.ci_configuration}}".lower() 
 
 
 
@@ -84,11 +85,11 @@ if __name__ == "__main__":
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
 
     # Include or exclude CI setup based on user choice
-    CI_option =  "{{cookiecutter.ci_configuration}}".lower()
-    
-    if CI_option == "github":
+    CI_OPTION =  "{{cookiecutter.ci_configuration}}".lower()
+    print(type(CI_OPTION))
+    if CI_OPTION == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
-    del CI_FILES[CI_option]
+    del CI_FILES[CI_OPTION]
     files_to_exclude = {x for v in CI_FILES.values() for x in v}
     for file_name in files_to_exclude:
         file_path = os.path.join(os.getcwd(), file_name)
