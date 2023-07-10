@@ -84,7 +84,6 @@ if __name__ == "__main__":
 
     # Include or exclude CI setup based on user choice
     ci_iption =  "{{cookiecutter.ci_configuration}}".lower()
-    os.environ["CI_configuration"] = ci_iption
     if ci_iption == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
     del CI_FILES[ci_iption]

@@ -46,9 +46,7 @@ def test_default_template(default_template):
         "pyproject.toml",
         "README.md",
     ]
-    ci_option = os.getenv("CI_configuration")
-    print(ci_option)
+    ci_option = "gitlab" # make it dynamic in a future version
     for expected_file in expected_files + CI_FILES[ci_option]:
         expected_file_path = default_template.joinpath(expected_file)
         assert expected_file_path.is_file(), f"Did not find file: {expected_file_path}"
-
