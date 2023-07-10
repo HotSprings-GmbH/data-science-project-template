@@ -1,5 +1,4 @@
 # standard library imports
-import cookiecutter
 import os
 import pathlib
 import subprocess
@@ -84,10 +83,11 @@ if __name__ == "__main__":
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
 
     # Include or exclude CI setup based on user choice
-    CI_OPTION =  "{{cookiecutter.ci_configuration}}".lower()
-    if CI_OPTION == "github":
+    ci_iption =  "{{cookiecutter.ci_configuration}}".lower()
+    os.environ["CI_configuartion"] = ci_iption
+    if ci_iption == "github":
         print("Sorry, template does not support GitHub support yet.\nWe will proceed with no CI for now.")
-    del CI_FILES[CI_OPTION]
+    del CI_FILES[ci_iption]
     files_to_exclude = {x for v in CI_FILES.values() for x in v}
     for file_name in files_to_exclude:
         file_path = os.path.join(os.getcwd(), file_name)

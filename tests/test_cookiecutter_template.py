@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name
 # standard library imports
-import json
+import os
 import pathlib
 import uuid
 
@@ -46,7 +46,8 @@ def test_default_template(default_template):
         "pyproject.toml",
         "README.md",
     ]
-    for expected_file in expected_files + CI_FILES["{{cookiecutter.ci_configuration}}".lower()]:
+    ci_option = os.getenv("CI_configuartion")
+    for expected_file in expected_files + CI_FILES[ci_option]:
         expected_file_path = default_template.joinpath(expected_file)
         assert expected_file_path.is_file(), f"Did not find file: {expected_file_path}"
 
