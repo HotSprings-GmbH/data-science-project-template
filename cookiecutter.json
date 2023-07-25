@@ -4,5 +4,6 @@
     "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "repo_url": "URL to repository",
     "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}",
-    "install_jupyter": ["yes", "no"]
+    "install_jupyter": ["yes", "no"],
+    "cicd_configuration": ["none", "gitlab"]
 }

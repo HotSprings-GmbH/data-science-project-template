@@ -10,7 +10,6 @@ from cookiecutter.main import cookiecutter
 # local imports
 from hooks.post_gen_project import get_package_manager
 
-
 TEMPLATE_DIRECTORY = str(pathlib.Path(__file__).parent.parent)
 PACKAGE_MANAGER = get_package_manager()
 
@@ -37,9 +36,6 @@ def test_default_template(default_template):
         ".commitlintrc.yaml",
         ".gitattributes",
         ".gitignore",
-        ".gitlab-ci-stages.yaml",
-        ".gitlab-ci-test.yaml",
-        ".gitlab-ci.yml",
         ".pre-commit-config.yaml",
         ".prettierrc",
         ".pylintrc",
