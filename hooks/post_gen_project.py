@@ -1,6 +1,7 @@
 # standard library imports
 import os
 import pathlib
+import shutil
 import subprocess
 from abc import ABC, abstractmethod
 
@@ -68,6 +69,65 @@ def get_package_manager() -> CondaLikePackageManager:
     raise RuntimeError("Could not determine conda-like package manager.")
 
 
+def _verify_if_dir_valid(path_to_dir: pathlib.Path):
+    if not path_to_dir.is_dir():
+        raise RuntimeError(f"{path_to_dir} is not a valid directory.")
+
+
+class ConditionalFileManager:
+    def __init__(
+        self,
+        temp_files_dir: pathlib.Path,
+        template_root_dir: pathlib.Path,
+        relevant_paths_list: list[pathlib.Path],
+    ) -> None:
+        _verify_if_dir_valid(temp_files_dir)
+        self.temp_files_dir = temp_files_dir
+        _verify_if_dir_valid(template_root_dir)
+        self.template_root_dir = template_root_dir
+        for relevant_path in relevant_paths_list:
+            if not self.temp_files_dir.joinpath(relevant_path).exists():
+                raise RuntimeError(
+                    f"A relevant path {relevant_path} does not exist in temp dir {self.temp_files_dir}."
+                )
+        self.relevant_paths_list = relevant_paths_list
+
+    def clean_temp_dir(self) -> None:
+        _verify_if_dir_valid(path_to_dir=self.temp_files_dir)
+        shutil.rmtree(self.temp_files_dir)
+
+    def copy_chosen_files(self) -> None:
+        for relevant_path in self.relevant_paths_list:
+            src = self.temp_files_dir.joinpath(relevant_path)
+            dst = self.template_root_dir.joinpath(relevant_path)
+            if src.is_dir():
+                shutil.copytree(src, dst)
+            else:
+                shutil.copy2(src, dst)
+
+
+def get_ci_cd_file_manager(ci_cd_options: str) -> ConditionalFileManager:
+    template_root_dir = pathlib.Path.cwd()
+    temp_files_dir = template_root_dir.joinpath(".temp_ci_cd")
+    if ci_cd_options == "none":
+        manager = ConditionalFileManager(
+            temp_files_dir=temp_files_dir,
+            template_root_dir=template_root_dir,
+            relevant_paths_list=[],
+        )
+    elif ci_cd_options == "gitlab":
+        manager = ConditionalFileManager(
+            temp_files_dir=temp_files_dir,
+            template_root_dir=template_root_dir,
+            relevant_paths_list=[".gitlab-ci.yml"],
+        )
+    else:
+        raise NotImplementedError(
+            f"Option {ci_cd_options} is not implemented as ci_cd_file_manager"
+        )
+    return manager
+
+
 if __name__ == "__main__":
     # actual hook starts here
     # initialize new project repository
@@ -79,6 +139,16 @@ if __name__ == "__main__":
     PACKAGE_MANAGER = get_package_manager()
     PACKAGE_MANAGER.create_env_from_yaml_file(yaml_file_path=pathlib.Path("environment.yaml"))
     PACKAGE_MANAGER.run_subprocess_in_env(env_name="{{cookiecutter.env_name}}", cmd=["pre-commit"])
+
+    print("before")
+    # setup ci/cd related files (if any)
+    print("initializing")
+    CICD_FILE_MANAGER = get_ci_cd_file_manager(ci_cd_options="{{cookiecutter.cicd_configuration}}")
+    print("copying")
+    CICD_FILE_MANAGER.copy_chosen_files()
+    print("cleaning")
+    CICD_FILE_MANAGER.clean_temp_dir()
+    print("after")
 
     # add template files to git and create initial commit
     subprocess.run(["git", "add", "."], check=True)
