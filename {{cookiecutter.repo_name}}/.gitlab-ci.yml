@@ -1,5 +1,27 @@
-# the ci configuration is split into multiple files
-# this allows the semantic versioning (versioning the template itself) to be easily removed
-include:
-    - .gitlab-ci-stages.yaml
-    - .gitlab-ci-test.yaml
+stages:
+    - test
+
+.setup_python_env: &setup_python_env
+    before_script:
+        - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates git-lfs
+        - conda env create -f environment.yaml --name=conda_env
+        - conda init bash
+        - source ~/.bashrc
+        - conda activate conda_env
+        - pre-commit install
+
+format_and_lint:
+    stage: test
+    image: continuumio/miniconda3
+    <<: *setup_python_env
+    script:
+        - pre-commit run --hook-stage manual --all-files
+        - git fetch
+        - chmod a+x check_commit_msgs.sh
+        - ./check_commit_msgs.sh -c "remotes/origin/${CI_COMMIT_BRANCH}" -m "remotes/origin/${CI_DEFAULT_BRANCH}"
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: never
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+          when: never
+        - when: always
