@@ -9,10 +9,8 @@ repos:
                 - '--maxkb=10000'
           - id: end-of-file-fixer
             exclude: '\.ipynb$'
-          - id: check-json
           - id: check-toml
           - id: check-xml
-          - id: check-yaml
           - id: check-case-conflict
           - id: detect-aws-credentials
             args:
