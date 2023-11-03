@@ -1,0 +1,7 @@
+features: 
+  - name: pylint
+    enabled: {{cookiecutter.linter_name == "pylint"}}
+    resources:
+      - .pylintrc
+  - name: ruff
+    enabled: {{cookiecutter.linter_name == "ruff"}}
