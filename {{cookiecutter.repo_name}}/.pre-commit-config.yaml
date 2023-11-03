@@ -39,6 +39,12 @@ repos:
             stages:
                 - commit
                 - manual
+    {%- if cookiecutter.linter_name == "ruff" %}
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.1.4
+      hooks: 
+      - id: ruff
+    {%- endif %}
     - repo: local
       hooks:
           - id: black
@@ -52,6 +58,7 @@ repos:
             entry: nbqa black
             language: system
             files: \.ipynb
+          {%- if cookiecutter.linter_name == "pylint" %}
           - id: pylint
             name: pylint
             entry: pylint
@@ -65,6 +72,8 @@ repos:
             args:
                 - --disable=pointless-statement,duplicate-code,expression-not-assigned
                 - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|([a-z_][a-z0-9_]{0,50}))$
+          # TODO: Add nbqa-ruff
+          {%- endif %}
     - repo: https://github.com/pre-commit/mirrors-prettier
       rev: v2.7.1
       hooks:
