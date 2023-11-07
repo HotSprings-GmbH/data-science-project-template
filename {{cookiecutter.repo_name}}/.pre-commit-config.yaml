@@ -73,7 +73,12 @@ repos:
             args:
                 - --disable=pointless-statement,duplicate-code,expression-not-assigned
                 - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__)|([a-z_][a-z0-9_]{0,50}))$
-          # TODO: Add nbqa-ruff
+          {%- elif cookiecutter.linter_name == "ruff" %}
+          - id: nbqa-ruff
+            name: nbqa-ruff
+            entry: nbqa ruff
+            language: system
+            files: \.ipynb
           {%- endif %}
     - repo: https://github.com/pre-commit/mirrors-prettier
       rev: v2.7.1
