@@ -5,3 +5,5 @@ features:
       - .pylintrc
   - name: ruff
     enabled: {{cookiecutter.linter_name == "ruff"}}
+    resources:
+      - ruff.toml

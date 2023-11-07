@@ -5,9 +5,9 @@ dependencies:
     - black=23.1.0
     - python=3.10.9
     - pre-commit=3.0.4
-    - nbqa=1.6.1
     {%- if cookiecutter.install_jupyter == 'yes' %}
     - jupyter=1.0.0
+    - nbqa=1.6.1
     {%- endif %}
     {%- if cookiecutter.linter_name == "pylint" %}
     - pylint=2.16.1

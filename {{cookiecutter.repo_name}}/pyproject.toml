@@ -21,10 +21,4 @@ exclude = '''
 [tool.isort]
 profile = 'black'
 line_length = 100
-
-{% elif cookiecutter.linter_name == "ruff" %}
-[tool.ruff]
-# Never enforce `E501` (line length violations), as this is handled by black
-ignore = ["E501"]
-line-length = 100 # sync with black
 {% endif %}
