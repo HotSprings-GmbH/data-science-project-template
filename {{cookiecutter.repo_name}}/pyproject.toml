@@ -17,6 +17,8 @@ exclude = '''
 )
 '''
 
+{% if cookiecutter.linter_name == "pylint" %}
 [tool.isort]
-profile='black'
+profile = 'black'
 line_length = 100
+{% endif %}

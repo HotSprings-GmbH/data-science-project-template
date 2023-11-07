@@ -10,6 +10,7 @@ repos:
           - id: end-of-file-fixer
             exclude: '\.ipynb$'
           - id: check-toml
+            exclude: '{{cookiecutter.repo_name}}/pyproject.toml'
           - id: check-xml
           - id: check-case-conflict
           - id: detect-aws-credentials
