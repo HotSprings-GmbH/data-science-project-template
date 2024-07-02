@@ -27,7 +27,7 @@ class CondaLikePackageManager(ABC):
 
     def remove_env(self, env_name: str):
         full_cmd = [self.executable, "env", "remove", "--name", env_name]
-        subprocess.run(full_cmd, check=True)
+        subprocess.run(full_cmd, check=True, env={"CONDA_YES": "true"})
 
 
 class CondaPackageManager(CondaLikePackageManager):
