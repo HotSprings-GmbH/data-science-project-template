@@ -26,7 +26,7 @@ repos:
       rev: v9.11.0
       hooks:
           - id: commitlint
-            additional_dependencies: ['@commitlint/config-conventional']
+            additional_dependencies: ['@commitlint/config-conventional@18.6.2']
             pass_filenames: true
             stages:
                 - commit-msg
