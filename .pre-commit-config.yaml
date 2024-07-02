@@ -2,7 +2,7 @@ default_install_hook_types: [pre-commit, commit-msg]
 default_stages: [commit, manual]
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.4.0
+      rev: v4.6.0
       hooks:
           - id: check-added-large-files
             args:
@@ -23,10 +23,10 @@ repos:
                 - manual
           - id: requirements-txt-fixer
     - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-      rev: v9.11.0
+      rev: v9.16.0
       hooks:
           - id: commitlint
-            additional_dependencies: ['@commitlint/config-conventional@18.6.2']
+            additional_dependencies: ['@commitlint/config-conventional@19.2.2']
             pass_filenames: true
             stages:
                 - commit-msg
@@ -52,7 +52,7 @@ repos:
             language: system
             types: [python]
     - repo: https://github.com/pre-commit/mirrors-prettier
-      rev: v2.7.1
+      rev: v3.1.0
       hooks:
           - id: prettier
             stages:
