@@ -1,0 +1,33 @@
+# sync with black
+line-length = 100
+
+# No need for NBQA as ruff has native Jupyter support
+extend-include = ["*.ipynb"]
+
+# https://docs.astral.sh/ruff/rules/
+ignore = [
+#    "E501", # Line too long, handled by black
+#    "W291", # Trailing whitespace, handled by black
+#    "W292", # Missing final newline, handled by black
+#    "PLR0904", # Too many public methods
+#    "PLR0911", # Too many return statements
+#    "PLR0913", # Too many arguments
+#    "PLC0415", # Import outside toplevel
+    # NA as checks yet but mentioned in github comments
+    # "C0305", # Trailing newlines, handled by black
+    # "C0114", # Missing module docstring
+    # "C0115", # Missing class docstring
+    # "C0116", # Missing function docstring
+    # "R0902", # Too many instance attributes
+    # "R0903", # Too few public methods
+    # "R0914", # Too many locals
+    # "W0124", # Confusing with statement
+    # "C0413", # Wrong import position
+    # "C0410", # Multiple imports
+    # "R1705", # No else return
+    # "W0201", # Attribute defined outside init
+    # "E1123", # Unexpected keyword arg
+    # "C0401", # Wrong spelling in comment
+    # "C0402", # Wrong spelling in docstring
+    # "C0403"  # Invalid character in docstring
+]

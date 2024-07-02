@@ -5,6 +5,8 @@ import shutil
 import subprocess
 from abc import ABC, abstractmethod
 
+import yaml
+
 
 # as cookiecutter is currently (v2.1.1) unable to support local imports in hooks
 # the environment management code has to be included here
@@ -105,6 +107,14 @@ class ConditionalFileManager:
             else:
                 shutil.copy2(src, dst)
 
+    def remove_unused_linter_files(self):
+        with open(f"{self.temp_files_dir}/.manifest.yaml", "r", encoding="utf-8") as f:
+            manifest = yaml.safe_load(f)
+            for feature in manifest["features"]:
+                if not feature["enabled"]:
+                    for resource in feature["resources"]:
+                        os.remove(resource)
+
 
 def get_ci_cd_file_manager(ci_cd_options: str) -> ConditionalFileManager:
     template_root_dir = pathlib.Path.cwd()
@@ -147,6 +157,7 @@ if __name__ == "__main__":
     print("copying")
     CICD_FILE_MANAGER.copy_chosen_files()
     print("cleaning")
+    CICD_FILE_MANAGER.remove_unused_linter_files()
     CICD_FILE_MANAGER.clean_temp_dir()
     print("after")
 
