@@ -2,11 +2,11 @@ name: '{{cookiecutter.env_name}}'
 channels:
     - conda-forge
 dependencies:
-    - black=23.1.0
-    - nbqa=1.6.1
+    - black=24.4.2
+    - nbqa=1.8.5
     {%- if cookiecutter.install_jupyter == 'yes' %}
     - jupyter=1.0.0
     {%- endif %}
     - python=3.10.9
-    - pre-commit=3.0.4
-    - pylint=2.16.1
+    - pre-commit=3.7.1
+    - pylint=3.2.5
