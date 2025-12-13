@@ -106,25 +106,33 @@ class ConditionalFileManager:
                 shutil.copy2(src, dst)
 
 
-def get_ci_cd_file_manager(ci_cd_options: str) -> ConditionalFileManager:
+def get_conditional_file_manager(ci_cd_option: str, linter_option: str) -> ConditionalFileManager:
     template_root_dir = pathlib.Path.cwd()
-    temp_files_dir = template_root_dir.joinpath(".temp_ci_cd")
-    if ci_cd_options == "none":
-        manager = ConditionalFileManager(
-            temp_files_dir=temp_files_dir,
-            template_root_dir=template_root_dir,
-            relevant_paths_list=[],
-        )
-    elif ci_cd_options == "gitlab":
-        manager = ConditionalFileManager(
-            temp_files_dir=temp_files_dir,
-            template_root_dir=template_root_dir,
-            relevant_paths_list=[".gitlab-ci.yml"],
-        )
-    else:
-        raise NotImplementedError(
-            f"Option {ci_cd_options} is not implemented as ci_cd_file_manager"
-        )
+    temp_files_dir = template_root_dir.joinpath(".conditional_files")
+    relevant_paths = []
+
+    match ci_cd_option:
+        case "gitlab":
+            relevant_paths.append(".gitlab-ci.yml")
+        case "none":
+            pass
+        case _:
+            raise NotImplementedError(f"Option {ci_cd_option} is not implemented as CI/CD pipeline")
+
+    match linter_option:
+        case "pylint":
+            relevant_paths.append(".pylintrc")
+        case "ruff":
+            relevant_paths.append("ruff.toml")
+        case _:
+            raise NotImplementedError(f"Option {linter_option} is not implemented as Linter")
+
+    manager = ConditionalFileManager(
+        temp_files_dir=temp_files_dir,
+        template_root_dir=template_root_dir,
+        relevant_paths_list=relevant_paths,
+    )
+
     return manager
 
 
@@ -143,7 +151,10 @@ if __name__ == "__main__":
     print("before")
     # setup ci/cd related files (if any)
     print("initializing")
-    CICD_FILE_MANAGER = get_ci_cd_file_manager(ci_cd_options="{{cookiecutter.cicd_configuration}}")
+    CICD_FILE_MANAGER = get_conditional_file_manager(
+        ci_cd_option="{{cookiecutter.cicd_configuration}}",
+        linter_option="{{cookiecutter.linter_name}}",
+    )
     print("copying")
     CICD_FILE_MANAGER.copy_chosen_files()
     print("cleaning")

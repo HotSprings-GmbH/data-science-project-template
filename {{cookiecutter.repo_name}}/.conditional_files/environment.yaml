@@ -10,7 +10,7 @@ dependencies:
     {%- if cookiecutter.linter_name == "pylint" %}
     - pylint=3.2.5
     {%- elif cookiecutter.linter_name == "ruff" %}
-    - ruff=0.6.7
+    - ruff=0.14.9
     {%- endif %}
     - python=3.10.9
     - pre-commit=3.7.1

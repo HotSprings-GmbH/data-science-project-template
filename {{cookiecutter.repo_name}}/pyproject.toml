@@ -1,3 +1,4 @@
+{% if cookiecutter.linter_name == "pylint" %}
 [tool.black]
 line-length = 100
 exclude = '''
@@ -18,5 +19,31 @@ exclude = '''
 '''
 
 [tool.isort]
-profile='black'
+profile = 'black'
 line_length = 100
+{% elif cookiecutter.linter_name == "ruff" %}
+[tool.ruff]
+line-length = 100
+exclude = [
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".tox",
+  ".venv",
+  "_build",
+  "buck-out",
+  "build",
+  "dist"
+]
+extend-include=["*.ipynb"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+{% endif %}
