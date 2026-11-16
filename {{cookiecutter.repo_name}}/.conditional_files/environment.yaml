@@ -7,8 +7,8 @@ dependencies:
     - nbqa={{ cookiecutter._versions.nbqa }}
     {%- endif %}
     {%- if cookiecutter.linter_name == "pylint" %}
-    - black={{ cookiecutter._versions.pylint }}
-    - pylint={{ cookiecutter._versions.black }}
+    - black={{ cookiecutter._versions.black }}
+    - pylint={{ cookiecutter._versions.pylint }}
     {%- elif cookiecutter.linter_name == "ruff" %}
     - ruff={{ cookiecutter._versions.ruff }}
     {%- endif %}

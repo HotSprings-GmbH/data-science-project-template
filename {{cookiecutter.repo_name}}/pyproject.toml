@@ -30,7 +30,7 @@ build-backend = "hatchling.build"
 package = false
 {% endif %} {% if cookiecutter.linter_name == "pylint" %}
 [tool.black]
-line-length = "{{ cookiecutter._conventions.line_length }}"
+line-length = {{ cookiecutter._conventions.line_length }}
 exclude = '''
 (
   /(
@@ -50,7 +50,7 @@ exclude = '''
 
 [tool.isort]
 profile = 'black'
-line_length = "{{ cookiecutter._conventions.line_length }}"
+line_length = {{ cookiecutter._conventions.line_length }}
 {% elif cookiecutter.linter_name == "ruff" %}
 [tool.ruff]
 line-length = {{ cookiecutter._conventions.line_length }}

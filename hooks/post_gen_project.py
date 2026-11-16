@@ -33,7 +33,7 @@ class CondaLikePackageManager(PackageManager):
 
     def remove_environment(self, env_name: str):
         full_cmd = [self.executable, "env", "remove", "--name", env_name]
-        subprocess.run(full_cmd, check=True, env={"CONDA_YES": "true"})
+        subprocess.run(full_cmd, check=True, env={**os.environ, "CONDA_YES": "true"})
 
 
 class UvPackageManager(PackageManager):
@@ -149,7 +149,7 @@ def get_conditional_file_manager(
         case "github":
             relevant_paths.append(".github/workflows/ci.yml")
         case "azure devops":
-            relevant_paths.append(".azure-pipelines.yml")
+            relevant_paths.append("azure-pipelines.yml")
         case "gitlab":
             relevant_paths.append(".gitlab-ci.yml")
         case "none":
