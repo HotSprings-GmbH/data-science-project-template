@@ -1,61 +1,43 @@
 default_install_hook_types: [pre-commit, commit-msg]
-default_stages: [commit, manual]
+default_stages: [pre-commit, manual]
 exclude: ^\{\{cookiecutter.repo_name\}\}/
+
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.6.0
+      rev: v6.0.0
       hooks:
           - id: check-added-large-files
-            args:
-                - '--maxkb=10000'
+            args: [--maxkb=10000]
           - id: end-of-file-fixer
             exclude: '\.ipynb$'
+          - id: check-json
           - id: check-toml
           - id: check-xml
+          - id: check-yaml
           - id: check-case-conflict
           - id: detect-aws-credentials
-            args:
-                - '--allow-missing-credentials'
+            args: [--allow-missing-credentials]
           - id: check-symlinks
           - id: check-merge-conflict
-            stages:
-                - commit
-                - merge-commit
-                - manual
           - id: requirements-txt-fixer
     - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-      rev: v9.16.0
+      rev: v9.23.0
       hooks:
           - id: commitlint
             additional_dependencies: ['@commitlint/config-conventional@19.2.2']
-            pass_filenames: true
-            stages:
-                - commit-msg
-    - repo: https://github.com/pycqa/isort
-      rev: 5.12.0
+            stages: [commit-msg]
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.17.5
       hooks:
-          - id: isort
-            name: isort (python)
-            stages:
-                - commit
-                - manual
+          - id: ruff-check
+            args: [--fix]
+          - id: ruff-format
     - repo: local
       hooks:
-          - id: black
-            name: black
-            entry: black
-            args: [--config=./pyproject.toml]
-            language: system
-            types: [python]
-          - id: pylint
-            name: pylint
-            entry: pylint
-            language: system
-            types: [python]
-    - repo: https://github.com/pre-commit/mirrors-prettier
-      rev: v3.1.0
-      hooks:
           - id: prettier
-            stages:
-                - commit
-                - manual
+            name: prettier
+            entry: prettier --write
+            language: node
+            additional_dependencies: ['prettier@3.6.2']
+            types_or: [json, yaml, markdown, html, css, javascript, ts, tsx]
+            exclude: ^data/
