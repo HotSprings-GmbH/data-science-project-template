@@ -202,10 +202,12 @@ source = { virtual = "." }
 [package.dev-dependencies]
 dev = [
     { name = "cookiecutter" },
+    { name = "packaging" },
     { name = "pre-commit" },
     { name = "pre-commit-hooks" },
     { name = "prettier" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -214,10 +216,12 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "cookiecutter" },
+    { name = "packaging" },
     { name = "pre-commit" },
     { name = "pre-commit-hooks" },
     { name = "prettier" },
     { name = "pytest" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 

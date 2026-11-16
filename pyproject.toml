@@ -11,6 +11,8 @@ dev = [
     "pre-commit-hooks",
     "prettier",
     "pytest",
+    "packaging",
+    "pyyaml",
     "ruff",
 ]
 
@@ -26,7 +28,8 @@ select = ["E", "F", "I", "B", "UP"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-log_cli = true
-log_cli_level = "DEBUG"
+markers = ["bootstrap: networked generated-project installation tests"]
+log_cli = false
+log_cli_level = "INFO"
 log_cli_format = "%(asctime)s %(levelname)s %(message)s"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
