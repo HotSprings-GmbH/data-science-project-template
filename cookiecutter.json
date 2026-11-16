@@ -9,13 +9,13 @@
     "linter_name": ["ruff", "pylint"],
     "cicd_configuration": ["none", "GitHub", "Azure DevOps", "GitLab"],
     "_versions": {
-        "python": "3.13",
-        "jupyter": "1.0.0",
-        "pylint": "3.2.5",
-        "ruff": "0.6.7",
-        "pre_commit": "3.7.1",
-        "nbqa": "1.8.5",
-        "black": "24.4.2"
+        "python": "3.14",
+        "jupyter": "1.1.1",
+        "pylint": "4.1.4",
+        "ruff": "0.17.5",
+        "pre_commit": "4.7.0",
+        "nbqa": "1.10.0",
+        "black": "26.10.1"
     },
     "_conventions": {
         "line_length": 100
