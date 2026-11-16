@@ -174,42 +174,41 @@ def get_conditional_file_manager(
     return manager
 
 
-if __name__ == "__main__":
-    # actual hook starts here
-    # initialize new project repository
+def prepare_project(package_manager_option: str, ci_cd_option: str, linter_option: str):
+    """Finalize generated files without installing tools or accessing the network."""
+    manager = get_conditional_file_manager(package_manager_option, ci_cd_option, linter_option)
+    manager.copy_chosen_files()
+    manager.clean_temp_dir()
+
+
+def bootstrap_project(package_manager_option: str, env_name: str, repo_url: str):
+    """Install the selected environment and initialize the generated repository."""
     subprocess.run(["git", "init"], check=True)
     subprocess.run(["git", "branch", "-m", "main"], check=True)
-    subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
+    subprocess.run(["git", "remote", "add", "origin", repo_url], check=True)
+    manager = get_package_manager(package_manager_option)
+    manager.create_environment()
+    manager.run_subprocess_in_env(
+        env_name=env_name, cmd=["pre-commit", "install", "--install-hooks"]
+    )
+    subprocess.run(["git", "add", "."], check=True)
+    manager.run_subprocess_in_env(
+        env_name=env_name, cmd=["pre-commit", "run", "--all-files"], check=False
+    )
+    subprocess.run(["git", "add", "."], check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "chore: initialize repo from data science template"], check=True
+    )
 
-    print("Initializing conditional files")
-    CONDITIONAL_FILE_MANAGER = get_conditional_file_manager(
+
+if __name__ == "__main__":
+    prepare_project(
         package_manager_option="{{cookiecutter.package_manager}}",
         ci_cd_option="{{cookiecutter.cicd_configuration}}",
         linter_option="{{cookiecutter.linter_name}}",
     )
-    print("Copying...")
-    CONDITIONAL_FILE_MANAGER.copy_chosen_files()
-    print("Cleaning...")
-    CONDITIONAL_FILE_MANAGER.clean_temp_dir()
-
-    # setup environment
-    print("Initializing environment using {{cookiecutter.package_manager}}")
-    PACKAGE_MANAGER = get_package_manager(package_manager_option="{{cookiecutter.package_manager}}")
-    PACKAGE_MANAGER.create_environment()
-    PACKAGE_MANAGER.run_subprocess_in_env(
-        env_name="{{cookiecutter.env_name}}", cmd=["pre-commit", "install", "--install-hooks"]
-    )
-
-    # Make sure all linting checks work after templating
-    print("Checking files...")
-    subprocess.run(["git", "add", "."], check=True)
-
-    PACKAGE_MANAGER.run_subprocess_in_env(
-        env_name="{{cookiecutter.env_name}}", cmd=["pre-commit", "run", "--all-files"], check=False
-    )
-
-    # add template files to git and create initial commit
-    subprocess.run(["git", "add", "."], check=True)
-    subprocess.run(
-        ["git", "commit", "-m", "chore: initialize repo from data science template"], check=True
+    bootstrap_project(
+        package_manager_option="{{cookiecutter.package_manager}}",
+        env_name="{{cookiecutter.env_name}}",
+        repo_url="{{cookiecutter.repo_url}}",
     )
