@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  format_and_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+{% if cookiecutter.package_manager == "uv" %}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --locked --group dev
+
+      - name: Run pre-commit
+        run: uv run --no-sync pre-commit run --hook-stage manual --all-files
+{% elif cookiecutter.package_manager == "conda" %}
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yaml
+          activate-environment: conda_env
+          auto-activate-base: false
+
+      - name: Run pre-commit
+        shell: bash -el {0}
+        run: pre-commit run --hook-stage manual --all-files
+{% endif %}
+      - name: Check commit messages
+        env:
+          CURRENT_BRANCH: {% raw %}${{ github.ref_name }}{% endraw %}
+          DEFAULT_BRANCH: {% raw %}${{ github.event.repository.default_branch }}{% endraw %}
+        run: |
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          chmod a+x check_commit_msgs.sh
+          ./check_commit_msgs.sh -c "remotes/origin/${CURRENT_BRANCH}" -m "remotes/origin/${DEFAULT_BRANCH}"

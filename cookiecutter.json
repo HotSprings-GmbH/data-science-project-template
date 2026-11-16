@@ -7,7 +7,7 @@
     "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}",
     "install_jupyter": ["yes", "no"],
     "linter_name": ["ruff", "pylint"],
-    "cicd_configuration": ["none", "gitlab"],
+    "cicd_configuration": ["none", "GitHub", "Azure DevOps", "GitLab"],
     "_versions": {
         "python": "3.13",
         "jupyter": "1.0.0",

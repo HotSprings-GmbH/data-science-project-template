@@ -130,6 +130,7 @@ class ConditionalFileManager:
             if src.is_dir():
                 shutil.copytree(src, dst)
             else:
+                dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dst)
 
 
@@ -144,7 +145,11 @@ def get_conditional_file_manager(
         case "conda":
             relevant_paths.append("environment.yaml")
 
-    match ci_cd_option:
+    match ci_cd_option.lower():
+        case "github":
+            relevant_paths.append(".github/workflows/ci.yml")
+        case "azure devops":
+            relevant_paths.append(".azure-pipelines.yml")
         case "gitlab":
             relevant_paths.append(".gitlab-ci.yml")
         case "none":
