@@ -1,21 +1,33 @@
+
 stages:
     - test
 
 .setup_python_env: &setup_python_env
     before_script:
         - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates git-lfs
+{% if cookiecutter.package_manager == "uv" %}
+        - uv sync --locked --group dev
+{% elif cookiecutter.package_manager == "conda" %}
         - conda env create -f environment.yaml --name=conda_env
         - conda init bash
         - source ~/.bashrc
         - conda activate conda_env
-        - pre-commit install
+{% endif %}
 
 format_and_lint:
     stage: test
+{% if cookiecutter.package_manager == "uv" %}
+    image: ghcr.io/astral-sh/uv:bookworm-slim
+{% elif cookiecutter.package_manager == "conda" %}
     image: continuumio/miniconda3
+{% endif %}
     <<: *setup_python_env
     script:
+{% if cookiecutter.package_manager == "uv" %}
+        - uv run --no-sync pre-commit run --hook-stage manual --all-files
+{% elif cookiecutter.package_manager == "conda" %}
         - pre-commit run --hook-stage manual --all-files
+{% endif %}
         - git fetch
         - chmod a+x check_commit_msgs.sh
         - ./check_commit_msgs.sh -c "remotes/origin/${CI_COMMIT_BRANCH}" -m "remotes/origin/${CI_DEFAULT_BRANCH}"

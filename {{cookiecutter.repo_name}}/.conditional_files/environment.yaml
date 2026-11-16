@@ -2,15 +2,15 @@ name: '{{cookiecutter.env_name}}'
 channels:
     - conda-forge
 dependencies:
-    - black=24.4.2
     {%- if cookiecutter.install_jupyter == 'yes' %}
-    - jupyter=1.0.0
-    - nbqa=1.8.5
+    - jupyter={{ cookiecutter._versions.jupyter }}
+    - nbqa={{ cookiecutter._versions.nbqa }}
     {%- endif %}
     {%- if cookiecutter.linter_name == "pylint" %}
-    - pylint=3.2.5
+    - black={{ cookiecutter._versions.pylint }}
+    - pylint={{ cookiecutter._versions.black }}
     {%- elif cookiecutter.linter_name == "ruff" %}
-    - ruff=0.14.9
+    - ruff={{ cookiecutter._versions.ruff }}
     {%- endif %}
-    - python=3.10.9
-    - pre-commit=3.7.1
+    - python={{ cookiecutter._versions.python }}
+    - pre-commit={{ cookiecutter._versions.pre_commit }}

@@ -6,67 +6,94 @@ import subprocess
 from abc import ABC, abstractmethod
 
 
-# as cookiecutter is currently (v2.1.1) unable to support local imports in hooks
-# the environment management code has to be included here
-class CondaLikePackageManager(ABC):
-    def __init__(self, executable_path: pathlib.Path):
-        self.executable: pathlib.Path = executable_path
+class PackageManager(ABC):
+    @abstractmethod
+    def create_environment(self): ...
 
     @abstractmethod
-    def create_env_from_yaml_file(self, yaml_file_path: pathlib.Path) -> None:
-        """Create environment using specs from yaml file.
+    def run_subprocess_in_env(self, env_name: str, cmd: list[str], check: bool = True): ...
 
-        Args:
-            yaml_file_path (Path): pathlib.Path to yaml file with conda compatible env specs.
-        """
-        raise NotImplementedError
 
-    def run_subprocess_in_env(self, env_name: str, cmd: list[str]):
+# as cookiecutter is currently (v2.1.1) unable to support local imports in hooks
+# the environment management code has to be included here
+class CondaLikePackageManager(PackageManager):
+    def __init__(self, executable_path: pathlib.Path, yaml_file_path: pathlib.Path):
+        self.executable: pathlib.Path = executable_path
+        self.yaml_file_path: pathlib.Path = (
+            yaml_file_path  # pathlib.Path to yaml file with conda compatible env specs.
+        )
+
+    def run_subprocess_in_env(self, env_name: str, cmd: list[str], check: bool = True):
         full_cmd = [self.executable, "run", "-n", env_name] + cmd
+        subprocess.run(full_cmd, check=check)
+
+    def create_environment(self) -> None:
+        full_cmd = [self.executable, "env", "create", "--file", str(self.yaml_file_path), "-q"]
         subprocess.run(full_cmd, check=True)
 
-    def remove_env(self, env_name: str):
+    def remove_environment(self, env_name: str):
         full_cmd = [self.executable, "env", "remove", "--name", env_name]
         subprocess.run(full_cmd, check=True, env={"CONDA_YES": "true"})
 
 
-class CondaPackageManager(CondaLikePackageManager):
-    def create_env_from_yaml_file(self, yaml_file_path: pathlib.Path) -> None:
-        full_cmd = [self.executable, "env", "create", "--file", str(yaml_file_path), "-q"]
-        subprocess.run(full_cmd, check=True)
+class UvPackageManager(PackageManager):
+    def __init__(self, executable_path: pathlib.Path):
+        self.executable_path = executable_path
+
+    def create_environment(self) -> None:
+        subprocess.run(
+            [str(self.executable_path), "sync"],
+            check=True,
+        )
+
+    def run_subprocess_in_env(self, env_name: str, cmd: list[str], check: bool = True) -> None:
+        subprocess.run(
+            [str(self.executable_path), "run", *cmd],
+            check=check,
+        )
 
 
-class MambaPackageManager(CondaLikePackageManager):
-    def create_env_from_yaml_file(self, yaml_file_path: pathlib.Path) -> None:
-        full_cmd = [self.executable, "env", "create", "--file", str(yaml_file_path), "-q"]
-        subprocess.run(full_cmd, check=True)
+def get_package_manager(package_manager_option: str) -> PackageManager:
+    match package_manager_option:
+        case "uv":
+            return get_uv_package_manager()
+        case "conda":
+            return get_conda_package_manager()
+        case _:
+            raise ValueError(f"Unsupported package manager {package_manager_option}")
 
 
-class MicroMambaPackageManager(CondaLikePackageManager):
-    def create_env_from_yaml_file(self, yaml_file_path: pathlib.Path) -> None:
-        full_cmd = [self.executable, "create", "--file", str(yaml_file_path), "-q"]
-        subprocess.run(full_cmd, check=True)
+def get_uv_package_manager() -> UvPackageManager:
+    executable = shutil.which("uv")
+    if executable is None:
+        raise RuntimeError("uv is not installed or not on PATH.")
+    return UvPackageManager(executable_path=pathlib.Path(executable))
 
 
-def get_package_manager() -> CondaLikePackageManager:
+def get_conda_package_manager() -> CondaLikePackageManager:
     system_env = os.environ
     if "MAMBA_EXE" in system_env:
-        executable_micromamba = pathlib.Path(system_env["MAMBA_EXE"])
-        return MicroMambaPackageManager(executable_path=executable_micromamba)
-    if "CONDA_EXE" in system_env:
+        executable = pathlib.Path(system_env["MAMBA_EXE"])
+    elif "CONDA_EXE" in system_env:
         if "mamba" in system_env["CONDA_EXE"]:
             executable_parent = pathlib.Path(system_env["CONDA_EXE"]).parent
             # conda.exe on windows, conda on unix
             # to be changed to mamba.exe on windows, mamba on unix
             executable_name_conda = pathlib.Path(system_env["CONDA_EXE"]).name
-            executable_mamba = executable_parent.joinpath(
-                executable_name_conda.replace("conda", "mamba")
-            )
-            return MambaPackageManager(executable_path=executable_mamba)
+            executable = executable_parent.joinpath(executable_name_conda.replace("conda", "mamba"))
         else:
-            executable_conda = pathlib.Path(system_env["CONDA_EXE"])
-            return CondaPackageManager(executable_path=executable_conda)
-    raise RuntimeError("Could not determine conda-like package manager.")
+            executable = shutil.which("conda")
+
+            if executable is None:
+                raise RuntimeError("Could not determine conda-like package manager.")
+
+            executable = pathlib.Path(executable)
+    else:
+        raise RuntimeError("Could not determine conda-like package manager.")
+
+    return CondaLikePackageManager(
+        executable_path=executable, yaml_file_path=pathlib.Path("environment.yaml")
+    )
 
 
 def _verify_if_dir_valid(path_to_dir: pathlib.Path):
@@ -88,7 +115,7 @@ class ConditionalFileManager:
         for relevant_path in relevant_paths_list:
             if not self.temp_files_dir.joinpath(relevant_path).exists():
                 raise RuntimeError(
-                    f"A relevant path {relevant_path} does not exist in temp dir {self.temp_files_dir}."
+                    f"A relevant path {relevant_path} does not exist in temp dir {self.temp_files_dir}."  # noqa: E501
                 )
         self.relevant_paths_list = relevant_paths_list
 
@@ -106,10 +133,16 @@ class ConditionalFileManager:
                 shutil.copy2(src, dst)
 
 
-def get_conditional_file_manager(ci_cd_option: str, linter_option: str) -> ConditionalFileManager:
+def get_conditional_file_manager(
+    package_manager_option: str, ci_cd_option: str, linter_option: str
+) -> ConditionalFileManager:
     template_root_dir = pathlib.Path.cwd()
     temp_files_dir = template_root_dir.joinpath(".conditional_files")
     relevant_paths = []
+
+    match package_manager_option:
+        case "conda":
+            relevant_paths.append("environment.yaml")
 
     match ci_cd_option:
         case "gitlab":
@@ -123,7 +156,7 @@ def get_conditional_file_manager(ci_cd_option: str, linter_option: str) -> Condi
         case "pylint":
             relevant_paths.append(".pylintrc")
         case "ruff":
-            relevant_paths.append("ruff.toml")
+            pass
         case _:
             raise NotImplementedError(f"Option {linter_option} is not implemented as Linter")
 
@@ -143,23 +176,32 @@ if __name__ == "__main__":
     subprocess.run(["git", "branch", "-m", "main"], check=True)
     subprocess.run(["git", "remote", "add", "origin", "{{cookiecutter.repo_url}}"], check=True)
 
-    # setup environment
-    PACKAGE_MANAGER = get_package_manager()
-    PACKAGE_MANAGER.create_env_from_yaml_file(yaml_file_path=pathlib.Path("environment.yaml"))
-    PACKAGE_MANAGER.run_subprocess_in_env(env_name="{{cookiecutter.env_name}}", cmd=["pre-commit"])
-
-    print("before")
-    # setup ci/cd related files (if any)
-    print("initializing")
-    CICD_FILE_MANAGER = get_conditional_file_manager(
+    print("Initializing conditional files")
+    CONDITIONAL_FILE_MANAGER = get_conditional_file_manager(
+        package_manager_option="{{cookiecutter.package_manager}}",
         ci_cd_option="{{cookiecutter.cicd_configuration}}",
         linter_option="{{cookiecutter.linter_name}}",
     )
-    print("copying")
-    CICD_FILE_MANAGER.copy_chosen_files()
-    print("cleaning")
-    CICD_FILE_MANAGER.clean_temp_dir()
-    print("after")
+    print("Copying...")
+    CONDITIONAL_FILE_MANAGER.copy_chosen_files()
+    print("Cleaning...")
+    CONDITIONAL_FILE_MANAGER.clean_temp_dir()
+
+    # setup environment
+    print("Initializing environment using {{cookiecutter.package_manager}}")
+    PACKAGE_MANAGER = get_package_manager(package_manager_option="{{cookiecutter.package_manager}}")
+    PACKAGE_MANAGER.create_environment()
+    PACKAGE_MANAGER.run_subprocess_in_env(
+        env_name="{{cookiecutter.env_name}}", cmd=["pre-commit", "install", "--install-hooks"]
+    )
+
+    # Make sure all linting checks work after templating
+    print("Checking files...")
+    subprocess.run(["git", "add", "."], check=True)
+
+    PACKAGE_MANAGER.run_subprocess_in_env(
+        env_name="{{cookiecutter.env_name}}", cmd=["pre-commit", "run", "--all-files"], check=False
+    )
 
     # add template files to git and create initial commit
     subprocess.run(["git", "add", "."], check=True)

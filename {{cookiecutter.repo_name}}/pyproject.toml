@@ -1,6 +1,36 @@
-{% if cookiecutter.linter_name == "pylint" %}
+[project]
+name = "{{ cookiecutter.repo_name }}"
+version = "0.1.0"
+description = "{{ cookiecutter.project_description }}"
+readme = "README.md"
+{% if cookiecutter.package_manager == "uv" %}
+requires-python = ">={{ cookiecutter._versions.python }}"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pre-commit=={{ cookiecutter._versions.pre_commit }}",
+    {% if cookiecutter.install_jupyter == "yes" -%}
+    "jupyter=={{ cookiecutter._versions.jupyter }}",
+    "nbqa=={{ cookiecutter._versions.nbqa }}",
+    {% endif -%}
+    {% if cookiecutter.linter_name == "pylint" -%}
+    "black=={{ cookiecutter._versions.black }}",
+    "pylint=={{ cookiecutter._versions.pylint }}",
+    {% elif cookiecutter.linter_name == "ruff" -%}
+    "ruff=={{ cookiecutter._versions.ruff }}",
+    {% endif -%}
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = false
+{% endif %} {% if cookiecutter.linter_name == "pylint" %}
 [tool.black]
-line-length = 100
+line-length = "{{ cookiecutter._conventions.line_length }}"
 exclude = '''
 (
   /(
@@ -20,10 +50,10 @@ exclude = '''
 
 [tool.isort]
 profile = 'black'
-line_length = 100
+line_length = "{{ cookiecutter._conventions.line_length }}"
 {% elif cookiecutter.linter_name == "ruff" %}
 [tool.ruff]
-line-length = 100
+line-length = {{ cookiecutter._conventions.line_length }}
 exclude = [
   ".eggs",
   ".git",
@@ -39,11 +69,12 @@ exclude = [
 extend-include=["*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401", "E402"]
+"__init__.py" = ["F401"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+docstring-code-format = true
 skip-magic-trailing-comma = false
 line-ending = "auto"
 {% endif %}
