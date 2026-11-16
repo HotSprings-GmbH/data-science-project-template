@@ -192,10 +192,12 @@ def bootstrap_project(package_manager_option: str, env_name: str, repo_url: str)
         env_name=env_name, cmd=["pre-commit", "install", "--install-hooks"]
     )
     subprocess.run(["git", "add", "."], check=True)
+    # Formatters may modify files on the first pass. The second pass must succeed.
     manager.run_subprocess_in_env(
         env_name=env_name, cmd=["pre-commit", "run", "--all-files"], check=False
     )
     subprocess.run(["git", "add", "."], check=True)
+    manager.run_subprocess_in_env(env_name=env_name, cmd=["pre-commit", "run", "--all-files"])
     subprocess.run(
         ["git", "commit", "-m", "chore: initialize repo from data science template"], check=True
     )
