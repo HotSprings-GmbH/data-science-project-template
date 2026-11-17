@@ -3,7 +3,21 @@
     "project_description": "A short description of the project.",
     "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "repo_url": "URL to repository",
+    "package_manager": ["uv", "conda"],
     "env_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') + '-env' }}",
     "install_jupyter": ["yes", "no"],
-    "cicd_configuration": ["none", "gitlab"]
+    "linter_name": ["ruff", "pylint"],
+    "cicd_configuration": ["none", "GitHub", "Azure DevOps", "GitLab"],
+    "_versions": {
+        "python": "3.14",
+        "jupyter": "1.1.1",
+        "pylint": "4.1.4",
+        "ruff": "0.17.5",
+        "pre_commit": "4.7.0",
+        "nbqa": "1.10.0",
+        "black": "26.10.1"
+    },
+    "_conventions": {
+        "line_length": 100
+    }
 }

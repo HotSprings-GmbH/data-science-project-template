@@ -1,0 +1,16 @@
+name: '{{cookiecutter.env_name}}'
+channels:
+    - conda-forge
+dependencies:
+    {%- if cookiecutter.install_jupyter == 'yes' %}
+    - jupyter={{ cookiecutter._versions.jupyter }}
+    - nbqa={{ cookiecutter._versions.nbqa }}
+    {%- endif %}
+    {%- if cookiecutter.linter_name == "pylint" %}
+    - black={{ cookiecutter._versions.black }}
+    - pylint={{ cookiecutter._versions.pylint }}
+    {%- elif cookiecutter.linter_name == "ruff" %}
+    - ruff={{ cookiecutter._versions.ruff }}
+    {%- endif %}
+    - python={{ cookiecutter._versions.python }}
+    - pre-commit={{ cookiecutter._versions.pre_commit }}

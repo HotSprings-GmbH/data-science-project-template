@@ -1,25 +1,35 @@
-[tool.black]
-line-length = 100
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-)
-'''
+[project]
+name = "data-science-project-template"
+version = "2.0.0"
+requires-python = ">=3.13"
+dependencies = []
 
-[tool.isort]
-profile='black'
-line_length = 100
+[dependency-groups]
+dev = [
+    "cookiecutter",
+    "pre-commit",
+    "pre-commit-hooks",
+    "prettier",
+    "pytest",
+    "packaging",
+    "pyyaml",
+    "ruff",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["{{cookiecutter.repo_name}}"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+testpaths = ["tests"]
+markers = ["bootstrap: networked generated-project installation tests"]
+log_cli = false
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"

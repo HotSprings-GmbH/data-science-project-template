@@ -1,0 +1,54 @@
+trigger:
+  branches:
+    include:
+      - '*'
+  tags:
+    exclude:
+      - '*'
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+  - job: format_and_lint
+    steps:
+      - checkout: self
+        fetchDepth: 0
+        persistCredentials: true
+
+{% if cookiecutter.package_manager == "uv" %}
+      - bash: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "##vso[task.prependpath]$HOME/.local/bin"
+        displayName: Install uv
+
+      - bash: uv sync --locked --group dev
+        displayName: Install dependencies
+
+      - bash: uv run --no-sync pre-commit run --hook-stage manual --all-files
+        displayName: Run pre-commit
+{% elif cookiecutter.package_manager == "conda" %}
+      - bash: |
+          curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+          bash miniconda.sh -b -p "$HOME/miniconda3"
+          echo "##vso[task.prependpath]$HOME/miniconda3/bin"
+        displayName: Install Conda
+
+      - bash: |
+          source "$HOME/miniconda3/etc/profile.d/conda.sh"
+          conda env create -f environment.yaml --name conda_env
+          conda activate conda_env
+          pre-commit run --hook-stage manual --all-files
+        displayName: Install dependencies and run pre-commit
+{% endif %}
+      - bash: |
+          set -euo pipefail
+          git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+          CURRENT_BRANCH="${BUILD_SOURCEBRANCH#refs/heads/}"
+          DEFAULT_BRANCH="$(git ls-remote --symref origin HEAD | awk '$1 == "ref:" { sub(/^refs\/heads\//, "", $2); print $2; exit }')"
+          test -n "$DEFAULT_BRANCH" || { echo 'Cannot determine default branch'; exit 1; }
+          chmod a+x check_commit_msgs.sh
+          ./check_commit_msgs.sh -c "remotes/origin/${CURRENT_BRANCH}" -m "remotes/origin/${DEFAULT_BRANCH}"
+        displayName: Check commit messages
